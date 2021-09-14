@@ -2629,7 +2629,8 @@ static int bpf_object__finalize_btf(struct bpf_object *obj)
 static bool prog_needs_vmlinux_btf(struct bpf_program *prog)
 {
 	if (prog->type == BPF_PROG_TYPE_STRUCT_OPS ||
-	    prog->type == BPF_PROG_TYPE_LSM)
+	    prog->type == BPF_PROG_TYPE_LSM ||
+	    prog->type == BPF_PROG_TYPE_SCHED)
 		return true;
 
 	/* BPF_PROG_TYPE_TRACING programs which do not attach to other programs
@@ -6256,7 +6257,8 @@ int bpf_program__load(struct bpf_program *prog, char *license, __u32 kern_ver)
 
 	if ((prog->type == BPF_PROG_TYPE_TRACING ||
 	     prog->type == BPF_PROG_TYPE_LSM ||
-	     prog->type == BPF_PROG_TYPE_EXT) && !prog->attach_btf_id) {
+	     prog->type == BPF_PROG_TYPE_EXT ||
+	     prog->type == BPF_PROG_TYPE_SCHED) && !prog->attach_btf_id) {
 		int btf_obj_fd = 0, btf_type_id = 0;
 
 		err = libbpf_find_attach_btf_id(prog, &btf_obj_fd, &btf_type_id);
@@ -7862,6 +7864,7 @@ BPF_PROG_TYPE_FNS(tracing, BPF_PROG_TYPE_TRACING);
 BPF_PROG_TYPE_FNS(struct_ops, BPF_PROG_TYPE_STRUCT_OPS);
 BPF_PROG_TYPE_FNS(extension, BPF_PROG_TYPE_EXT);
 BPF_PROG_TYPE_FNS(sk_lookup, BPF_PROG_TYPE_SK_LOOKUP);
+BPF_PROG_TYPE_FNS(sched, BPF_PROG_TYPE_SCHED);
 
 enum bpf_attach_type
 bpf_program__get_expected_attach_type(const struct bpf_program *prog)
@@ -7926,6 +7929,7 @@ static struct bpf_link *attach_lsm(const struct bpf_sec_def *sec,
 				   struct bpf_program *prog);
 static struct bpf_link *attach_iter(const struct bpf_sec_def *sec,
 				    struct bpf_program *prog);
+static struct bpf_link *attach_sched(struct bpf_program *prog);
 
 static const struct bpf_sec_def section_defs[] = {
 	BPF_PROG_SEC("socket",			BPF_PROG_TYPE_SOCKET_FILTER),
@@ -7998,6 +8002,10 @@ static const struct bpf_sec_def section_defs[] = {
 		.attach_fn = attach_iter),
 	SEC_DEF("syscall", SYSCALL,
 		.is_sleepable = true),
+	SEC_DEF("sched/", SCHED,
+		.is_attach_btf = true,
+		.expected_attach_type = BPF_SCHED,
+		.attach_fn = attach_sched),
 	BPF_EAPROG_SEC("xdp_devmap/",		BPF_PROG_TYPE_XDP,
 						BPF_XDP_DEVMAP),
 	BPF_EAPROG_SEC("xdp_cpumap/",		BPF_PROG_TYPE_XDP,
@@ -8285,6 +8293,7 @@ invalid_prog:
 #define BTF_TRACE_PREFIX "btf_trace_"
 #define BTF_LSM_PREFIX "bpf_lsm_"
 #define BTF_ITER_PREFIX "bpf_iter_"
+#define BTF_SCHED_PREFIX "bpf_sched_"
 #define BTF_MAX_NAME_SIZE 128
 
 void btf_get_kernel_prefix_kind(enum bpf_attach_type attach_type,
@@ -8301,6 +8310,10 @@ void btf_get_kernel_prefix_kind(enum bpf_attach_type attach_type,
 		break;
 	case BPF_TRACE_ITER:
 		*prefix = BTF_ITER_PREFIX;
+		*kind = BTF_KIND_FUNC;
+		break;
+	case BPF_SCHED:
+		*prefix = BTF_SCHED_PREFIX;
 		*kind = BTF_KIND_FUNC;
 		break;
 	default:
@@ -9540,6 +9553,11 @@ struct bpf_link *bpf_program__attach_lsm(struct bpf_program *prog)
 	return bpf_program__attach_btf_id(prog);
 }
 
+struct bpf_link *bpf_program__attach_sched(struct bpf_program *prog)
+{
+	return bpf_program__attach_btf_id(prog);
+}
+
 static struct bpf_link *attach_trace(const struct bpf_sec_def *sec,
 				     struct bpf_program *prog)
 {
@@ -9550,6 +9568,11 @@ static struct bpf_link *attach_lsm(const struct bpf_sec_def *sec,
 				   struct bpf_program *prog)
 {
 	return bpf_program__attach_lsm(prog);
+}
+
+static struct bpf_link *attach_sched(struct bpf_program *prog)
+{
+	return bpf_program__attach_sched(prog);
 }
 
 static struct bpf_link *
