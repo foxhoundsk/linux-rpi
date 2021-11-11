@@ -124,6 +124,42 @@ bpf_sched_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
 		return &bpf_sched_entity_to_cgrpid_proto;
 	case BPF_FUNC_sched_entity_belongs_to_cgrp:
 		return &bpf_sched_entity_belongs_to_cgrp_proto;
+        case BPF_FUNC_ringbuf_reserve:
+                return &bpf_ringbuf_reserve_proto;
+        case BPF_FUNC_ringbuf_submit:
+                return &bpf_ringbuf_submit_proto;
+        case BPF_FUNC_ringbuf_output:
+                return &bpf_ringbuf_output_proto;
+        case BPF_FUNC_ringbuf_discard:
+                return &bpf_ringbuf_discard_proto;
+        case BPF_FUNC_ringbuf_query:
+                return &bpf_ringbuf_query_proto;
+        case BPF_FUNC_ktime_get_ns:
+                return &bpf_ktime_get_ns_proto;
+        case BPF_FUNC_map_lookup_elem:
+                return &bpf_map_lookup_elem_proto;
+        case BPF_FUNC_map_update_elem:
+                return &bpf_map_update_elem_proto;
+        case BPF_FUNC_map_delete_elem:
+                return &bpf_map_delete_elem_proto;
+        case BPF_FUNC_map_push_elem:
+                return &bpf_map_push_elem_proto;
+        case BPF_FUNC_map_pop_elem:
+                return &bpf_map_pop_elem_proto;
+        case BPF_FUNC_map_peek_elem:
+                return &bpf_map_peek_elem_proto;
+        case BPF_FUNC_get_smp_processor_id:
+                return &bpf_get_smp_processor_id_proto;
+        /*
+        case BPF_FUNC_probe_read_kernel:
+                return security_locked_down(LOCKDOWN_BPF_READ_KERNEL) < 0 ?
+                       NULL : &bpf_probe_read_kernel_proto;
+        case BPF_FUNC_probe_read_user_str:
+                return &bpf_probe_read_user_str_proto;
+        case BPF_FUNC_probe_read_kernel_str:
+                return security_locked_down(LOCKDOWN_BPF_READ_KERNEL) < 0 ?
+                       NULL : &bpf_probe_read_kernel_str_proto;
+        */
 	default:
 		return NULL;
 	}
