@@ -27,6 +27,8 @@
 #include "pelt.h"
 #include "smp.h"
 
+#include <linux/bpf_sched.h>
+
 /*
  * Export tracepoints that act as a bare tracehook (ie: have no trace event
  * associated with them) to allow external modules to probe them.
@@ -2001,6 +2003,9 @@ void activate_task(struct rq *rq, struct task_struct *p, int flags)
 	enqueue_task(rq, p, flags);
 
 	p->on_rq = TASK_ON_RQ_QUEUED;
+
+        if (bpf_sched_enabled())
+                bpf_sched_core_enqueue(p);
 }
 
 void deactivate_task(struct rq *rq, struct task_struct *p, int flags)
@@ -6260,6 +6265,9 @@ static void __sched notrace __schedule(unsigned int sched_mode)
 #endif
 
 	if (likely(prev != next)) {
+                if (bpf_sched_enabled())
+                    bpf_sched_core_pick_next_task(next);
+
 		rq->nr_switches++;
 		/*
 		 * RCU users of rcu_dereference(rq->curr) may not see
