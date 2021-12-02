@@ -150,16 +150,6 @@ bpf_sched_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
                 return &bpf_map_peek_elem_proto;
         case BPF_FUNC_get_smp_processor_id:
                 return &bpf_get_smp_processor_id_proto;
-        /*
-        case BPF_FUNC_probe_read_kernel:
-                return security_locked_down(LOCKDOWN_BPF_READ_KERNEL) < 0 ?
-                       NULL : &bpf_probe_read_kernel_proto;
-        case BPF_FUNC_probe_read_user_str:
-                return &bpf_probe_read_user_str_proto;
-        case BPF_FUNC_probe_read_kernel_str:
-                return security_locked_down(LOCKDOWN_BPF_READ_KERNEL) < 0 ?
-                       NULL : &bpf_probe_read_kernel_str_proto;
-        */
 	default:
 		return NULL;
 	}
