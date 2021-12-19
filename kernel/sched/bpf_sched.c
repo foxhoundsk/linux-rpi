@@ -150,6 +150,10 @@ bpf_sched_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
                 return &bpf_map_peek_elem_proto;
         case BPF_FUNC_get_smp_processor_id:
                 return &bpf_get_smp_processor_id_proto;
+        case BPF_FUNC_get_stackid:
+                return &bpf_get_stackid_proto;
+        case BPF_FUNC_get_stack:
+                return &bpf_get_stack_proto;
 	default:
 		return NULL;
 	}
