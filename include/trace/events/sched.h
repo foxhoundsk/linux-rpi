@@ -682,6 +682,391 @@ TRACE_EVENT(sched_wake_idle_without_ipi,
 	TP_printk("cpu=%d", __entry->cpu)
 );
 
+TRACE_EVENT(sched_run_rebalance_domains_s,
+
+        TP_PROTO(int dummy),
+
+        TP_ARGS(dummy),
+
+        TP_STRUCT__entry(
+                __field(        int,    dummy   )
+        ),
+
+        TP_fast_assign(
+                __entry->dummy  = dummy;
+        ),
+
+        TP_printk("sidpd_e dummy=%d", __entry->dummy)
+);
+TRACE_EVENT(sched_run_rebalance_domains_e,
+
+        TP_PROTO(int dummy),
+
+        TP_ARGS(dummy),
+
+        TP_STRUCT__entry(
+                __field(        int,    dummy   )
+        ),
+
+        TP_fast_assign(
+                __entry->dummy  = dummy;
+        ),
+
+        TP_printk("sidpd_e dummy=%d", __entry->dummy)
+);
+TRACE_EVENT(sched_nohz_idle_balance_s,
+
+        TP_PROTO(int dummy),
+
+        TP_ARGS(dummy),
+
+        TP_STRUCT__entry(
+                __field(        int,    dummy   )
+        ),
+
+        TP_fast_assign(
+                __entry->dummy  = dummy;
+        ),
+
+        TP_printk("sidpd_e dummy=%d", __entry->dummy)
+);
+TRACE_EVENT(sched_nohz_idle_balance_e,
+
+        TP_PROTO(int dummy),
+
+        TP_ARGS(dummy),
+
+        TP_STRUCT__entry(
+                __field(        int,    dummy   )
+        ),
+
+        TP_fast_assign(
+                __entry->dummy  = dummy;
+        ),
+
+        TP_printk("sidpd_e dummy=%d", __entry->dummy)
+);
+TRACE_EVENT(sched__nohz_idle_balance_s,
+
+        TP_PROTO(int dummy),
+
+        TP_ARGS(dummy),
+
+        TP_STRUCT__entry(
+                __field(        int,    dummy   )
+        ),
+
+        TP_fast_assign(
+                __entry->dummy  = dummy;
+        ),
+
+        TP_printk("sidpd_e dummy=%d", __entry->dummy)
+);
+TRACE_EVENT(sched__nohz_idle_balance_e,
+
+        TP_PROTO(int dummy),
+
+        TP_ARGS(dummy),
+
+        TP_STRUCT__entry(
+                __field(        int,    dummy   )
+        ),
+
+        TP_fast_assign(
+                __entry->dummy  = dummy;
+        ),
+
+        TP_printk("sidpd_e dummy=%d", __entry->dummy)
+);
+TRACE_EVENT(sched_rebalance_domains_s,
+
+        TP_PROTO(int dummy),
+
+        TP_ARGS(dummy),
+
+        TP_STRUCT__entry(
+                __field(        int,    dummy   )
+        ),
+
+        TP_fast_assign(
+                __entry->dummy  = dummy;
+        ),
+
+        TP_printk("sidpd_e dummy=%d", __entry->dummy)
+);
+TRACE_EVENT(sched_rebalance_domains_e,
+
+        TP_PROTO(int dummy),
+
+        TP_ARGS(dummy),
+
+        TP_STRUCT__entry(
+                __field(        int,    dummy   )
+        ),
+
+        TP_fast_assign(
+                __entry->dummy  = dummy;
+        ),
+
+        TP_printk("sidpd_e dummy=%d", __entry->dummy)
+);
+TRACE_EVENT(sched_load_balance_s,
+
+        TP_PROTO(int dummy),
+
+        TP_ARGS(dummy),
+
+        TP_STRUCT__entry(
+                __field(        int,    dummy   )
+        ),
+
+        TP_fast_assign(
+                __entry->dummy  = dummy;
+        ),
+
+        TP_printk("sidpd_e dummy=%d", __entry->dummy)
+);
+TRACE_EVENT(sched_load_balance_e,
+
+        TP_PROTO(int dummy),
+
+        TP_ARGS(dummy),
+
+        TP_STRUCT__entry(
+                __field(        int,    dummy   )
+        ),
+
+        TP_fast_assign(
+                __entry->dummy  = dummy;
+        ),
+
+        TP_printk("sidpd_e dummy=%d", __entry->dummy)
+);
+TRACE_EVENT(sched_detach_tasks_s,
+
+        TP_PROTO(int dummy),
+
+        TP_ARGS(dummy),
+
+        TP_STRUCT__entry(
+                __field(        int,    dummy   )
+        ),
+
+        TP_fast_assign(
+                __entry->dummy  = dummy;
+        ),
+
+        TP_printk("sidpd_e dummy=%d", __entry->dummy)
+);
+TRACE_EVENT(sched_detach_tasks_e,
+
+        TP_PROTO(int dummy),
+
+        TP_ARGS(dummy),
+
+        TP_STRUCT__entry(
+                __field(        int,    dummy   )
+        ),
+
+        TP_fast_assign(
+                __entry->dummy  = dummy;
+        ),
+
+        TP_printk("sidpd_e dummy=%d", __entry->dummy)
+);
+TRACE_EVENT(sched_attach_tasks_s,
+
+        TP_PROTO(int dummy),
+
+        TP_ARGS(dummy),
+
+        TP_STRUCT__entry(
+                __field(        int,    dummy   )
+        ),
+
+        TP_fast_assign(
+                __entry->dummy  = dummy;
+        ),
+
+        TP_printk("sidpd_e dummy=%d", __entry->dummy)
+);
+TRACE_EVENT(sched_attach_tasks_e,
+
+        TP_PROTO(int dummy),
+
+        TP_ARGS(dummy),
+
+        TP_STRUCT__entry(
+                __field(        int,    dummy   )
+        ),
+
+        TP_fast_assign(
+                __entry->dummy  = dummy;
+        ),
+
+        TP_printk("sidpd_e dummy=%d", __entry->dummy)
+);
+TRACE_EVENT(sched_scheduler_tick_s,
+
+        TP_PROTO(int dummy),
+
+        TP_ARGS(dummy),
+
+        TP_STRUCT__entry(
+                __field(        int,    dummy   )
+        ),
+
+        TP_fast_assign(
+                __entry->dummy  = dummy;
+        ),
+
+        TP_printk("sidpd_e dummy=%d", __entry->dummy)
+);
+TRACE_EVENT(sched_scheduler_tick_e,
+
+        TP_PROTO(int dummy),
+
+        TP_ARGS(dummy),
+
+        TP_STRUCT__entry(
+                __field(        int,    dummy   )
+        ),
+
+        TP_fast_assign(
+                __entry->dummy  = dummy;
+        ),
+
+        TP_printk("sidpd_e dummy=%d", __entry->dummy)
+);
+TRACE_EVENT(sched_task_tick_fair_s,
+
+        TP_PROTO(int dummy),
+
+        TP_ARGS(dummy),
+
+        TP_STRUCT__entry(
+                __field(        int,    dummy   )
+        ),
+
+        TP_fast_assign(
+                __entry->dummy  = dummy;
+        ),
+
+        TP_printk("sidpd_e dummy=%d", __entry->dummy)
+);
+TRACE_EVENT(sched_task_tick_fair_e,
+
+        TP_PROTO(int dummy),
+
+        TP_ARGS(dummy),
+
+        TP_STRUCT__entry(
+                __field(        int,    dummy   )
+        ),
+
+        TP_fast_assign(
+                __entry->dummy  = dummy;
+        ),
+
+        TP_printk("sidpd_e dummy=%d", __entry->dummy)
+);
+TRACE_EVENT(sched___schedule_s,
+
+        TP_PROTO(int dummy),
+
+        TP_ARGS(dummy),
+
+        TP_STRUCT__entry(
+                __field(        int,    dummy   )
+        ),
+
+        TP_fast_assign(
+                __entry->dummy  = dummy;
+        ),
+
+        TP_printk("sidpd_e dummy=%d", __entry->dummy)
+);
+TRACE_EVENT(sched___schedule_e,
+
+        TP_PROTO(int dummy),
+
+        TP_ARGS(dummy),
+
+        TP_STRUCT__entry(
+                __field(        int,    dummy   )
+        ),
+
+        TP_fast_assign(
+                __entry->dummy  = dummy;
+        ),
+
+        TP_printk("sidpd_e dummy=%d", __entry->dummy)
+);
+TRACE_EVENT(sched_pick_next_task_s,
+
+        TP_PROTO(int dummy),
+
+        TP_ARGS(dummy),
+
+        TP_STRUCT__entry(
+                __field(        int,    dummy   )
+        ),
+
+        TP_fast_assign(
+                __entry->dummy  = dummy;
+        ),
+
+        TP_printk("sidpd_e dummy=%d", __entry->dummy)
+);
+TRACE_EVENT(sched_pick_next_task_e,
+
+        TP_PROTO(int dummy),
+
+        TP_ARGS(dummy),
+
+        TP_STRUCT__entry(
+                __field(        int,    dummy   )
+        ),
+
+        TP_fast_assign(
+                __entry->dummy  = dummy;
+        ),
+
+        TP_printk("sidpd_e dummy=%d", __entry->dummy)
+);
+TRACE_EVENT(sched_lb_softirq_s, /* paired with trace_sched_run_rebalance_domains_e */
+
+        TP_PROTO(int dummy),
+
+        TP_ARGS(dummy),
+
+        TP_STRUCT__entry(
+                __field(        int,    dummy   )
+        ),
+
+        TP_fast_assign(
+                __entry->dummy  = dummy;
+        ),
+
+        TP_printk("sidpd_e dummy=%d", __entry->dummy)
+);
+TRACE_EVENT(sched_lb_softirq_e,
+
+        TP_PROTO(int dummy),
+
+        TP_ARGS(dummy),
+
+        TP_STRUCT__entry(
+                __field(        int,    dummy   )
+        ),
+
+        TP_fast_assign(
+                __entry->dummy  = dummy;
+        ),
+
+        TP_printk("sidpd_e dummy=%d", __entry->dummy)
+);
+
 /*
  * Following tracepoints are not exported in tracefs and provide hooking
  * mechanisms only for testing and debugging purposes.

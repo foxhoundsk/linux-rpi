@@ -7939,7 +7939,7 @@ static int detach_tasks(struct lb_env *env)
 	unsigned long util, load;
 	struct task_struct *p;
 	int detached = 0;
-
+trace_sched_detach_tasks_s(0);
 	lockdep_assert_rq_held(env->src_rq);
 
 	/*
@@ -7948,11 +7948,14 @@ static int detach_tasks(struct lb_env *env)
 	 */
 	if (env->src_rq->nr_running <= 1) {
 		env->flags &= ~LBF_ALL_PINNED;
+trace_sched_detach_tasks_e(0);
 		return 0;
 	}
 
-	if (env->imbalance <= 0)
+	if (env->imbalance <= 0) {
+trace_sched_detach_tasks_e(0);
 		return 0;
+        }
 
 	while (!list_empty(tasks)) {
 		/*
@@ -8062,6 +8065,7 @@ next:
 	 */
 	schedstat_add(env->sd->lb_gained[env->idle], detached);
 
+trace_sched_detach_tasks_e(0);
 	return detached;
 }
 
@@ -8100,7 +8104,7 @@ static void attach_tasks(struct lb_env *env)
 	struct list_head *tasks = &env->tasks;
 	struct task_struct *p;
 	struct rq_flags rf;
-
+trace_sched_attach_tasks_s(0);
 	rq_lock(env->dst_rq, &rf);
 	update_rq_clock(env->dst_rq);
 
@@ -8112,6 +8116,7 @@ static void attach_tasks(struct lb_env *env)
 	}
 
 	rq_unlock(env->dst_rq, &rf);
+trace_sched_attach_tasks_e(0);
 }
 
 #ifdef CONFIG_NO_HZ_COMMON
@@ -9813,7 +9818,7 @@ static int load_balance(int this_cpu, struct rq *this_rq,
 		.fbq_type	= all,
 		.tasks		= LIST_HEAD_INIT(env.tasks),
 	};
-
+trace_sched_load_balance_s(0);
 	cpumask_and(cpus, sched_domain_span(sd), cpu_active_mask);
 
 	schedstat_inc(sd->lb_count[idle]);
@@ -10053,6 +10058,7 @@ out_one_pinned:
 	    sd->balance_interval < sd->max_interval)
 		sd->balance_interval *= 2;
 out:
+trace_sched_load_balance_e(0);
 	return ld_moved;
 }
 
@@ -10206,7 +10212,7 @@ static void rebalance_domains(struct rq *rq, enum cpu_idle_type idle)
 	int update_next_balance = 0;
 	int need_serialize, need_decay = 0;
 	u64 max_cost = 0;
-
+trace_sched_rebalance_domains_s(0);
 	rcu_read_lock();
 	for_each_domain(cpu, sd) {
 		/*
@@ -10279,6 +10285,7 @@ out:
 	if (likely(update_next_balance))
 		rq->next_balance = next_balance;
 
+trace_sched_rebalance_domains_e(0);
 }
 
 static inline int on_null_domain(struct rq *rq)
@@ -10606,7 +10613,7 @@ static void _nohz_idle_balance(struct rq *this_rq, unsigned int flags,
 	int this_cpu = this_rq->cpu;
 	int balance_cpu;
 	struct rq *rq;
-
+trace_sched__nohz_idle_balance_s(0);
 	SCHED_WARN_ON((flags & NOHZ_KICK_MASK) == NOHZ_BALANCE_KICK);
 
 	/*
@@ -10683,6 +10690,8 @@ abort:
 	/* There is still blocked load, enable periodic update */
 	if (has_blocked_load)
 		WRITE_ONCE(nohz.has_blocked, 1);
+
+trace_sched__nohz_idle_balance_e(0);
 }
 
 /*
@@ -10692,17 +10701,22 @@ abort:
 static bool nohz_idle_balance(struct rq *this_rq, enum cpu_idle_type idle)
 {
 	unsigned int flags = this_rq->nohz_idle_balance;
-
-	if (!flags)
+trace_sched_nohz_idle_balance_s(0);
+	if (!flags) {
+trace_sched_nohz_idle_balance_e(0);
 		return false;
+        }
 
 	this_rq->nohz_idle_balance = 0;
 
-	if (idle != CPU_IDLE)
+	if (idle != CPU_IDLE) {
+trace_sched_nohz_idle_balance_e(0);
 		return false;
+        }
 
 	_nohz_idle_balance(this_rq, flags, idle);
 
+trace_sched_nohz_idle_balance_e(0);
 	return true;
 }
 
@@ -10901,6 +10915,8 @@ static __latent_entropy void run_rebalance_domains(struct softirq_action *h)
 	enum cpu_idle_type idle = this_rq->idle_balance ?
 						CPU_IDLE : CPU_NOT_IDLE;
 
+trace_sched_run_rebalance_domains_s(0);
+
 	/*
 	 * If this CPU has a pending nohz_balance_kick, then do the
 	 * balancing on behalf of the other idle CPUs whose ticks are
@@ -10909,12 +10925,15 @@ static __latent_entropy void run_rebalance_domains(struct softirq_action *h)
 	 * load balance only within the local sched_domain hierarchy
 	 * and abort nohz_idle_balance altogether if we pull some load.
 	 */
-	if (nohz_idle_balance(this_rq, idle))
+	if (nohz_idle_balance(this_rq, idle)) {
+trace_sched_run_rebalance_domains_e(0);
 		return;
+        }
 
 	/* normal load balance */
 	update_blocked_averages(this_rq->cpu);
 	rebalance_domains(this_rq, idle);
+trace_sched_run_rebalance_domains_e(0);
 }
 
 /*
@@ -10929,8 +10948,10 @@ void trigger_load_balance(struct rq *rq)
 	if (unlikely(on_null_domain(rq) || !cpu_active(cpu_of(rq))))
 		return;
 
-	if (time_after_eq(jiffies, rq->next_balance))
+	if (time_after_eq(jiffies, rq->next_balance)) {
+trace_sched_lb_softirq_s(0);
 		raise_softirq(SCHED_SOFTIRQ);
+        }
 
 	nohz_balancer_kick(rq);
 }
@@ -11078,6 +11099,8 @@ static void task_tick_fair(struct rq *rq, struct task_struct *curr, int queued)
 	struct cfs_rq *cfs_rq;
 	struct sched_entity *se = &curr->se;
 
+trace_sched_task_tick_fair_s(0);
+
 	for_each_sched_entity(se) {
 		cfs_rq = cfs_rq_of(se);
 		entity_tick(cfs_rq, se, queued);
@@ -11090,6 +11113,8 @@ static void task_tick_fair(struct rq *rq, struct task_struct *curr, int queued)
 	update_overutilized_status(task_rq(curr));
 
 	task_tick_core(rq, curr);
+
+trace_sched_task_tick_fair_e(0);
 }
 
 /*

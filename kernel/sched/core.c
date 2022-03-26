@@ -5213,6 +5213,8 @@ void scheduler_tick(void)
 	unsigned long thermal_pressure;
 	u64 resched_latency;
 
+trace_sched_scheduler_tick_s(0);
+
 	arch_scale_freq_tick();
 	sched_clock_tick();
 
@@ -5237,6 +5239,7 @@ void scheduler_tick(void)
 	rq->idle_balance = idle_cpu(cpu);
 	trigger_load_balance(rq);
 #endif
+trace_sched_scheduler_tick_e(0);
 }
 
 #ifdef CONFIG_NO_HZ_FULL
@@ -5671,28 +5674,38 @@ extern void task_vruntime_update(struct rq *rq, struct task_struct *p, bool in_f
 static struct task_struct *
 pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
 {
-	struct task_struct *next, *max = NULL;
+        // we add __p simply for tracing, this is ugly
+        // maybe trace pick_next_task_fair is enough
+	struct task_struct *next, *max = NULL, *__p;
 	const struct sched_class *class;
 	const struct cpumask *smt_mask;
 	bool fi_before = false;
 	int i, j, cpu, occ = 0;
 	bool need_sync;
 
-	if (!sched_core_enabled(rq))
-		return __pick_next_task(rq, prev, rf);
 
-	cpu = cpu_of(rq);
+trace_sched_pick_next_task_s(0);
 
-	/* Stopper task is switching into idle, no need core-wide selection. */
-	if (cpu_is_offline(cpu)) {
-		/*
-		 * Reset core_pick so that we don't enter the fastpath when
-		 * coming online. core_pick would already be migrated to
-		 * another cpu during offline.
-		 */
-		rq->core_pick = NULL;
-		return __pick_next_task(rq, prev, rf);
-	}
+        if (!sched_core_enabled(rq)) {
+                __p = __pick_next_task(rq, prev, rf);
+trace_sched_pick_next_task_e(0);
+                return __p;
+        }
+
+        cpu = cpu_of(rq);
+
+        /* Stopper task is switching into idle, no need core-wide selection. */
+        if (cpu_is_offline(cpu)) {
+                /*
+                 * Reset core_pick so that we don't enter the fastpath when
+                 * coming online. core_pick would already be migrated to
+                 * another cpu during offline.
+                 */
+                rq->core_pick = NULL;
+                __p = __pick_next_task(rq, prev, rf);
+trace_sched_pick_next_task_e(0);
+                return __p;
+        }
 
 	/*
 	 * If there were no {en,de}queues since we picked (IOW, the task
@@ -5715,6 +5728,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
 		}
 
 		rq->core_pick = NULL;
+trace_sched_pick_next_task_e(0);
 		return next;
 	}
 
@@ -5898,6 +5912,7 @@ again:
 
 done:
 	set_next_task(rq, next);
+trace_sched_pick_next_task_e(0);
 	return next;
 }
 
@@ -6184,6 +6199,8 @@ static void __sched notrace __schedule(unsigned int sched_mode)
 	struct rq *rq;
 	int cpu;
 
+trace_sched___schedule_s(0);
+
 	cpu = smp_processor_id();
 	rq = cpu_rq(cpu);
 	prev = rq->curr;
@@ -6296,6 +6313,7 @@ static void __sched notrace __schedule(unsigned int sched_mode)
 
 		trace_sched_switch(sched_mode & SM_MASK_PREEMPT, prev, next);
 
+trace_sched___schedule_e(0);
 		/* Also unlocks the rq: */
 		rq = context_switch(rq, prev, next, &rf);
 	} else {
@@ -6305,6 +6323,8 @@ static void __sched notrace __schedule(unsigned int sched_mode)
 		__balance_callbacks(rq);
 		raw_spin_rq_unlock_irq(rq);
 	}
+
+trace_sched___schedule_e(0);
 }
 
 void __noreturn do_task_dead(void)
@@ -6373,6 +6393,7 @@ asmlinkage __visible void __sched schedule(void)
 {
 	struct task_struct *tsk = current;
 
+
 	sched_submit_work(tsk);
 	do {
 		preempt_disable();
@@ -6380,6 +6401,7 @@ asmlinkage __visible void __sched schedule(void)
 		sched_preempt_enable_no_resched();
 	} while (need_resched());
 	sched_update_worker(tsk);
+
 }
 EXPORT_SYMBOL(schedule);
 
